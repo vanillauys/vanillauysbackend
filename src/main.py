@@ -6,7 +6,7 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from routers import calculators, crypto, users
+from routers import calculators, crypto
 from schemas import Message
 
 
