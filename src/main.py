@@ -6,7 +6,6 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from deps import get_current_user
 from routers import calculators, crypto, users
 from schemas import Message
 
@@ -37,10 +36,6 @@ TAGS_METADATA = [
             "url": "https://fastapi.tiangolo.com/",
         }
     },
-    {
-        "name": "Users",
-        "description": "For managing user authentication.",
-    }
 ]
 
 
@@ -75,7 +70,6 @@ app.add_middleware(
 #Add routers from different files here, to keep things tidy.
 app.include_router(calculators.router)
 app.include_router(crypto.router)
-app.include_router(users.router)
 
 
 # ---------------------------------------------------------------------------- #
@@ -97,21 +91,6 @@ def info():
         'message': "https://vanillauys.com:8000/docs"
     }
     return JSONResponse(status_code=200, content=response)
-
-
-@app.get('/protected', tags=['Testing'],
-        response_model=Message,
-        responses={
-            500: {"model": Message}
-        }
-)
-def protected(user: User = Depends(get_current_user)):
-    response = {
-        'message': "You are logged in"
-    }
-    return JSONResponse(status_code=200, content=response)    
-
-
 
 
 # ---------------------------------------------------------------------------- #
