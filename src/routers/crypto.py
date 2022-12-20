@@ -36,4 +36,5 @@ async def get_rates():
     if status:
         return JSONResponse(status_code=200, content=response)
     else:
-        return JSONResponse(status_code=500, content="An error occured on the server.")
+        response = "An error occured while loading exchange rates"
+        return JSONResponse(status_code=500, content={'message': response})

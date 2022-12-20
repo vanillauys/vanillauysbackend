@@ -54,7 +54,8 @@ def interest_calculator(interest_body: InterestBody):
         }
         return JSONResponse(status_code=200, content=response)
     else:
-        return JSONResponse(status_code=500, content="An error occured on the server.")
+        response = "An error occurred on the server."
+        return JSONResponse(status_code=500, content={'message': response})
 
 
 # Age Calculator
@@ -71,4 +72,4 @@ def age_calculator(start_date: str, end_date: str):
     if status:
         return JSONResponse(status_code=200, content=result)
     else:
-        return JSONResponse(status_code=500, content=result)
+        return JSONResponse(status_code=500, content={'message': result})

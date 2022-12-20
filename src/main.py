@@ -3,10 +3,11 @@
 # ---------------------------------------------------------------------------- #
 
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from routers import calculators, crypto
+from deps import get_current_user
+from routers import calculators, crypto, users
 from schemas import Message
 
 
@@ -35,6 +36,10 @@ TAGS_METADATA = [
             "description": "FastAPI Documentation",
             "url": "https://fastapi.tiangolo.com/",
         }
+    },
+    {
+        "name": "Users",
+        "description": "For managing user authentication.",
     }
 ]
 
@@ -44,10 +49,10 @@ app = FastAPI(
     title = "Vanillauys Backend Documentation",
     description = "A collection of simple APIs for my front end.",
     version = "0.0.0",
-    terms_of_service = "https://vanillauys.com/terms",
+    terms_of_service = "https://vanillauys.vercel.app/terms",
     contact = {
         "name": "Wihan Uys",
-        "url": "https://vanillauys.com/about",
+        "url": "https://vanillauys.vercel.app/about",
         "email": "wihan@duck.com",
     },
     license_info = {
@@ -70,6 +75,7 @@ app.add_middleware(
 #Add routers from different files here, to keep things tidy.
 app.include_router(calculators.router)
 app.include_router(crypto.router)
+app.include_router(users.router)
 
 
 # ---------------------------------------------------------------------------- #
@@ -91,6 +97,20 @@ def info():
         'message': "https://vanillauys.com:8000/docs"
     }
     return JSONResponse(status_code=200, content=response)
+
+
+@app.get('/protected', tags=['Testing'],
+        response_model=Message,
+        responses={
+            500: {"model": Message}
+        }
+)
+def protected(user: User = Depends(get_current_user)):
+    response = {
+        'message': "You are logged in"
+    }
+    return JSONResponse(status_code=200, content=response)    
+
 
 
 
