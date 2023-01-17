@@ -3,7 +3,7 @@
 # ---------------------------------------------------------------------------- #
 
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
 from typing import Union
 from datetime import datetime
 
@@ -52,3 +52,18 @@ class Crypto(BaseModel):
 # --- User Schemas ----------------------------------------------------------- #
 # ---------------------------------------------------------------------------- #
 
+
+class UserSchema(BaseModel):
+    username: str = Field(default=None)
+    email: EmailStr = Field(default=None)
+    password: str = Field(default=None)
+
+
+class UserLoginSchema(BaseModel):
+    email: EmailStr = Field(default=None)
+    password: str = Field(default=None)
+
+
+class LoggedIn(BaseModel):
+    access_token: str
+    refresh_token: str

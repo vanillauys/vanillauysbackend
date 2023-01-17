@@ -6,14 +6,16 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from routers import calculators, crypto
+from routers import calculators, crypto, users
 from schemas import Message
+from dotenv import load_dotenv
 
 
 # ---------------------------------------------------------------------------- #
 # --- App Configuration ------------------------------------------------------ #
 # ---------------------------------------------------------------------------- #
 
+load_dotenv()
 
 TAGS_METADATA = [
     {
@@ -27,6 +29,10 @@ TAGS_METADATA = [
             "description": "VALR",
             "url": "https://valr.com/"
         }
+    },
+    {
+        "name": "Users",
+        "description": "User sign up and authentication."
     },
     {
         "name": "Testing",
@@ -70,6 +76,7 @@ app.add_middleware(
 #Add routers from different files here, to keep things tidy.
 app.include_router(calculators.router)
 app.include_router(crypto.router)
+app.include_router(users.router)
 
 
 # ---------------------------------------------------------------------------- #
@@ -99,8 +106,8 @@ def info():
 
 
 def main():
+    load_dotenv()
     #Nothing to do here...
-    pass
 
 
 if __name__ == "__main__":
