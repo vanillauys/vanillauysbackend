@@ -16,10 +16,17 @@ from auth.auth_manager import Auth
 ah = Auth()
 
 def create_user(user: UserSchema):
-    if check_email(user.email):
-        return False, 'email'
-    if check_username(user.username):
-        return False, 'username'
+    status, email = check_email(user.email)
+    if not status:
+        return False, 'an error occured when trying to check if the email address is in use.'
+    if email:
+        return False, f'{user.email} already exists in the db.'
+
+    status, username = check_username(user.username):
+    if not status:
+        return False, 'an error occured when trying to check if the username is in use.'
+    if username:
+        return False, f'{user.username} already exists in the db.'
 
     data = {
         'username': user.username,
@@ -31,7 +38,10 @@ def create_user(user: UserSchema):
 
 
 def login_user(user: UserLoginSchema):
-    data = check_email(user.email)
+    status, data = check_email(user.email)
+
+    if not status:
+        return False, f'an error occured while trying to log in {user.email}.'
 
     if not data:
         return False, f'{user.email} does not exist in db.'
@@ -42,13 +52,19 @@ def login_user(user: UserLoginSchema):
     return True, f'{user.email} logged in successfully.'
 
 
-def check_email(email: str) -> bool:
-    results = users.fetch({'email': email})
-    user = results.items
-    return user
+def check_email(email: str) -> bool, list:
+    try:
+        results = users.fetch({'email': email})
+        user = results.items
+        return True, user
+    except Exception:
+        return False, None
 
 
-def check_username(username: str) -> bool:
-    results = users.fetch({'username': username})
-    user = results.items
-    return user
+def check_username(username: str) -> bool, list:
+    try:
+        results = users.fetch({'username': username})
+        user = results.items
+        return True, user
+    except Exception:
+        return False, None

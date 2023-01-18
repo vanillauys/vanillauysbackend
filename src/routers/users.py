@@ -41,7 +41,7 @@ def sign_up(user: UserSchema):
         return JSONResponse(status_code=200, content=response)
     else:
         response = {
-            'message': f'{result} is already in use.'
+            'message': result
         }
         return JSONResponse(status_code=409, content=response)
 
@@ -62,7 +62,7 @@ def login(user: UserLoginSchema):
     
     access_token = auth_handler.encode_token(user.email)
     refresh_token = auth_handler.encode_refresh_token(user.email)
-    return {
+    response = {
         'access_token': access_token,
         'refresh_token': refresh_token
     }

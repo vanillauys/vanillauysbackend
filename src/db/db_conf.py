@@ -13,8 +13,7 @@ import os
 # ---------------------------------------------------------------------------- #
 
 
-load_dotenv()
-PROJECT_KEY = os.environ.get('DETA_PROJECT_KEY')
+PROJECT_KEY = os.getenv('DETA_PROJECT_KEY')
 deta = Deta(PROJECT_KEY)
 users = deta.Base('users')
 budgets = deta.Base('budgets')
