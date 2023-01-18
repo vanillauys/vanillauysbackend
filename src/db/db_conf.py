@@ -12,7 +12,7 @@ import os
 # --- Configuration ---------------------------------------------------------- #
 # ---------------------------------------------------------------------------- #
 
-
+load_dotenv()
 PROJECT_KEY = os.getenv('DETA_PROJECT_KEY')
 deta = Deta(PROJECT_KEY)
 users = deta.Base('users')

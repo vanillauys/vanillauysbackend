@@ -22,7 +22,7 @@ def create_user(user: UserSchema):
     if email:
         return False, f'{user.email} already exists in the db.'
 
-    status, username = check_username(user.username):
+    status, username = check_username(user.username)
     if not status:
         return False, 'an error occured when trying to check if the username is in use.'
     if username:
@@ -52,7 +52,7 @@ def login_user(user: UserLoginSchema):
     return True, f'{user.email} logged in successfully.'
 
 
-def check_email(email: str) -> bool, list:
+def check_email(email: str) -> (bool, list):
     try:
         results = users.fetch({'email': email})
         user = results.items
@@ -61,7 +61,7 @@ def check_email(email: str) -> bool, list:
         return False, None
 
 
-def check_username(username: str) -> bool, list:
+def check_username(username: str) -> (bool, list):
     try:
         results = users.fetch({'username': username})
         user = results.items

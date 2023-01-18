@@ -8,11 +8,13 @@ import jwt
 from fastapi import HTTPException
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
+from dotenv import load_dotenv
 
 
 # ---------------------------------------------------------------------------- #
 # --- Password hashing and verification -------------------------------------- #
 # ---------------------------------------------------------------------------- #
+
 
 class Auth():
     hasher= CryptContext(schemes=['bcrypt'])
