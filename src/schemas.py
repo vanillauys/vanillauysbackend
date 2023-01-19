@@ -4,8 +4,7 @@
 
 
 from pydantic import BaseModel, Field, EmailStr
-from typing import Union
-from datetime import datetime
+from typing import Dict
 
 
 # ---------------------------------------------------------------------------- #
@@ -87,5 +86,5 @@ class DeleteBudget(BaseModel):
 class UpdateBudget(BaseModel):
     email: EmailStr
     key: str
-    income: dict
-    expenses: dict
+    income: Dict[str, float,]
+    expenses: Dict[str, float]
