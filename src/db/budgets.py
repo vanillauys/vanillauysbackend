@@ -78,6 +78,7 @@ def get_budget(key: str):
         if result is None:
             return False, f'no budget with key {key} found in db.'
         
+        del result['email']
         return True, result
     except:
         return False, f'an error occurred while getting budget with key {key}'
