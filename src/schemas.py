@@ -88,3 +88,26 @@ class UpdateBudget(BaseModel):
     key: str
     income: Dict[str, float,]
     expenses: Dict[str, float]
+
+
+# ---------------------------------------------------------------------------- #
+# --- Notes Schemas ---------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
+
+
+class CreateNote(BaseModel):
+    email: EmailStr
+    title: str
+    body: str
+
+
+class UpdateNote(BaseModel):
+    email: EmailStr
+    key: str
+    title: str
+    body: str
+
+
+class DeleteNote(BaseModel):
+    email: EmailStr
+    key: str

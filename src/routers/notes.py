@@ -6,13 +6,13 @@
 from fastapi import APIRouter, Security
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi.responses import JSONResponse
-from schemas import Message, CreateBudget, UpdateBudget, DeleteBudget
-from db.budgets import (
-        create_budget,
-        delete_budget,
-        update_budget,
-        get_all_budgets,
-        get_budget
+from schemas import Message, CreateNote, UpdateNote, DeleteNote
+from db.notes import (
+        create_note,
+        delete_note,
+        update_note,
+        get_all_notes,
+        get_note
 )
 from auth.auth_manager import Auth
 
@@ -28,26 +28,26 @@ auth_handler = Auth()
 
 
 # ---------------------------------------------------------------------------- #
-# --- App Routes : Budget Application ---------------------------------------- #
+# --- App Routes : Notes Application ----------------------------------------- #
 # ---------------------------------------------------------------------------- #
 
 
-@router.post('/budgets/create', tags=['Budgets'],
+@router.post('/notes/create', tags=['Notes'],
              response_model=Message,
              responses={
                 401: {"model": Message},
                 500: {"model": Message}
 })
-def create(create: CreateBudget, credentials: HTTPAuthorizationCredentials = Security(security)):
+def create(create: CreateNote, credentials: HTTPAuthorizationCredentials = Security(security)):
     token = credentials.credentials
     decoded_token = auth_handler.decode_token(token)
     if not decoded_token:
         return JSONResponse(status_code=401, content={'message': 'Invalid credentials'})
     
     if decoded_token != create.email:
-        return JSONResponse(status_code=401, content={'message': 'you may not create a budget for this user'})
+        return JSONResponse(status_code=401, content={'message': 'you may not create a note for this user'})
     
-    status, response = create_budget(create.email, create.name)
+    status, response = create_note(create.email, create.title, create.body)
     if not status:
         return JSONResponse(status_code=500, content={'message': response})
     
@@ -55,22 +55,22 @@ def create(create: CreateBudget, credentials: HTTPAuthorizationCredentials = Sec
 
 
 
-@router.post('/budgets/update', tags=['Budgets'],
+@router.post('/notes/update', tags=['Notes'],
              response_model=Message,
              responses={
                 401: {"model": Message},
                 500: {"model": Message}
 })
-def update(update: UpdateBudget, credentials: HTTPAuthorizationCredentials = Security(security)):
+def update(update: UpdateNote, credentials: HTTPAuthorizationCredentials = Security(security)):
     token = credentials.credentials
     decoded_token = auth_handler.decode_token(token)
     if not decoded_token:
         return JSONResponse(status_code=401, content={'message': 'Invalid credentials'})
     
     if decoded_token != update.email:
-        return JSONResponse(status_code=401, content={'message': 'you may not update a budget for this user'})
+        return JSONResponse(status_code=401, content={'message': 'you may not update a note for this user'})
     
-    status, response = update_budget(update.key, update.income, update.expenses)
+    status, response = update_note(update.key, update.title, update.body)
     if not status:
         return JSONResponse(status_code=500, content={'message': response})
     
@@ -78,7 +78,7 @@ def update(update: UpdateBudget, credentials: HTTPAuthorizationCredentials = Sec
 
 
 
-@router.get('/budgets/all', tags=['Budgets'],
+@router.get('/notes/all', tags=['Notes'],
              response_model=Message,
              responses={
                 401: {"model": Message},
@@ -90,14 +90,14 @@ def get_all(credentials: HTTPAuthorizationCredentials = Security(security)):
     if not decoded_token:
         return JSONResponse(status_code=401, content={'message': 'Invalid credentials'})
     
-    status, response = get_all_budgets(decoded_token)
+    status, response = get_all_notes(decoded_token)
     if not status:
         return JSONResponse(status_code=500, content={'message': response})
     
     return JSONResponse(status_code=200, content=response)
 
 
-@router.get('/budgets/{key}', tags=['Budgets'],
+@router.get('/notes/{key}', tags=['Notes'],
              response_model=Message,
              responses={
                 401: {"model": Message},
@@ -109,29 +109,29 @@ def get_one(key: str, credentials: HTTPAuthorizationCredentials = Security(secur
     if not decoded_token:
         return JSONResponse(status_code=401, content={'message': 'Invalid credentials'})
     
-    status, response = get_budget(key)
+    status, response = get_note(key)
     if not status:
         return JSONResponse(status_code=500, content={'message': response})
     
     return JSONResponse(status_code=200, content=response)
 
 
-@router.delete('/budgets/delete', tags=['Budgets'],
+@router.delete('/notes/delete', tags=['Notes'],
              response_model=Message,
              responses={
                 401: {"model": Message},
                 500: {"model": Message}
 })
-def delete(delete: DeleteBudget, credentials: HTTPAuthorizationCredentials = Security(security)):
+def delete(delete: DeleteNote, credentials: HTTPAuthorizationCredentials = Security(security)):
     token = credentials.credentials
     decoded_token = auth_handler.decode_token(token)
     if not decoded_token:
         return JSONResponse(status_code=401, content={'message': 'Invalid credentials'})
     
     if decoded_token != delete.email:
-        return JSONResponse(status_code=401, content={'message': 'you may not delete a budget for this user'})
+        return JSONResponse(status_code=401, content={'message': 'you may not delete a note for this user'})
     
-    status, response = delete_budget(delete.key)
+    status, response = delete_note(delete.key)
     if not status:
         return JSONResponse(status_code=500, content={'message': response})
     
