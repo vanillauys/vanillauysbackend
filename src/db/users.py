@@ -52,7 +52,7 @@ def login_user(user: UserLoginSchema):
     return True, f'{user.email} logged in successfully.'
 
 
-def check_email(email: str) -> (bool, list):
+def check_email(email: str):
     try:
         results = users.fetch({'email': email})
         user = results.items
@@ -61,7 +61,7 @@ def check_email(email: str) -> (bool, list):
         return False, None
 
 
-def check_username(username: str) -> (bool, list):
+def check_username(username: str):
     try:
         results = users.fetch({'username': username})
         user = results.items

@@ -8,7 +8,6 @@ import jwt
 from fastapi import HTTPException
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
-from dotenv import load_dotenv
 
 
 # ---------------------------------------------------------------------------- #

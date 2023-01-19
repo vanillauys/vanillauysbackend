@@ -3,10 +3,10 @@
 # ---------------------------------------------------------------------------- #
 
 
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from routers import calculators, crypto, users
+from routers import calculators, crypto, users, budgets
 from schemas import Message
 from dotenv import load_dotenv
 
@@ -35,13 +35,17 @@ TAGS_METADATA = [
         "description": "User sign up and authentication."
     },
     {
+        "name": "Budgets",
+        "description": "Keeping track of income and expenses."
+    },
+    {
         "name": "Testing",
         "description": "Routes to test functionality.",
         "externalDocs": {
             "description": "FastAPI Documentation",
             "url": "https://fastapi.tiangolo.com/",
         }
-    },
+    }
 ]
 
 
@@ -77,6 +81,7 @@ app.add_middleware(
 app.include_router(calculators.router)
 app.include_router(crypto.router)
 app.include_router(users.router)
+app.include_router(budgets.router)
 
 
 # ---------------------------------------------------------------------------- #

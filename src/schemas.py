@@ -67,3 +67,25 @@ class UserLoginSchema(BaseModel):
 class LoggedIn(BaseModel):
     access_token: str
     refresh_token: str
+
+
+# ---------------------------------------------------------------------------- #
+# --- Budget Schemas --------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
+
+
+class CreateBudget(BaseModel):
+    email: EmailStr
+    name: str
+
+
+class DeleteBudget(BaseModel):
+    email: EmailStr
+    key: str
+
+
+class UpdateBudget(BaseModel):
+    email: EmailStr
+    key: str
+    income: dict
+    expenses: dict

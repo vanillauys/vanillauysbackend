@@ -3,7 +3,7 @@
 # ---------------------------------------------------------------------------- #
 
 
-from fastapi import APIRouter, Depends, HTTPException, Security
+from fastapi import APIRouter, Security
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi.responses import JSONResponse
 from schemas import Message, UserLoginSchema, UserSchema, LoggedIn
