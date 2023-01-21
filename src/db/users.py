@@ -15,6 +15,7 @@ from auth.auth_manager import Auth
 
 ah = Auth()
 
+
 def create_user(user: UserSchema):
     status, email = check_email(user.email)
     if not status:
@@ -48,7 +49,7 @@ def login_user(user: UserLoginSchema):
 
     if not ah.verify_password(user.password, data[0]['password']):
         return False, f'invalid password for {user.email}.'
-    
+
     return True, f'{user.email} logged in successfully.'
 
 

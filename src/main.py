@@ -53,26 +53,26 @@ TAGS_METADATA = [
 ]
 
 
-#Configure the API with detailed description
+# Configure the API with detailed description
 app = FastAPI(
-    title = "Vanillauys Backend Documentation",
-    description = "A collection of simple APIs for my front end.",
-    version = "0.0.0",
-    terms_of_service = "https://vanillauys.vercel.app/terms",
-    contact = {
+    title="Vanillauys Backend Documentation",
+    description="A collection of simple APIs for my front end.",
+    version="0.0.0",
+    terms_of_service="https://vanillauys.vercel.app/terms",
+    contact={
         "name": "Wihan Uys",
         "url": "https://vanillauys.vercel.app/about",
         "email": "wihan@duck.com",
     },
-    license_info = {
+    license_info={
         "name": "MIT",
         "url": "https://spdx.org/licenses/MIT.html",
     },
-    openapi_tags = TAGS_METADATA,
-    openapi_url = "/openapi.json",
+    openapi_tags=TAGS_METADATA,
+    openapi_url="/openapi.json",
 )
 
-#Allow CORS
+# Allow CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -81,7 +81,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-#Add routers from different files here, to keep things tidy.
+# Add routers from different files here, to keep things tidy.
 app.include_router(calculators.router)
 app.include_router(crypto.router)
 app.include_router(users.router)
@@ -95,10 +95,10 @@ app.include_router(notes.router)
 
 
 @app.get('/', tags=['Testing'],
-        response_model=Message, 
-        responses={
-            500: {"model": Message}
-        }
+         response_model=Message,
+         responses={
+    500: {"model": Message}
+}
 )
 def info():
     """
@@ -117,7 +117,7 @@ def info():
 
 def main():
     load_dotenv()
-    #Nothing to do here...
+    # Nothing to do here...
 
 
 if __name__ == "__main__":

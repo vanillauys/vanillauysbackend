@@ -21,11 +21,12 @@ def calculate_time(start_date: str, end_date: str):
         start = datetime.strptime(start_date, "%Y-%m-%d")
         end = datetime.strptime(end_date, "%Y-%m-%d")
     except Exception as e:
-        print('[bold red]Invalid start or end date[/bold red], please use the correct format.')
+        print(
+            '[bold red]Invalid start or end date[/bold red], please use the correct format.')
         return False, "The format of start or end date is invalid."
 
     if end < start:
-        print('End date cannot be before start date.') 
+        print('End date cannot be before start date.')
         return False, "The end date cannot be before start date."
 
     seconds = (end - start).total_seconds()
@@ -65,13 +66,15 @@ def main():
         table.add_row('Minutes', str(round(times['minutes'])))
         table.add_row('Hours', str(round(times['hours'])))
         table.add_row('Days', str(times['days']))
-        table.add_row('Weeks and Days', f"{str(round(times['weeks'][0]))}, {str(round(times['weeks'][1]))}")
-        table.add_row('Months and Days', f"{str(round(times['md'][0]))}, {str(round(times['md'][1]))}")
-        table.add_row('Years, Months and Days', f"{str(round(times['ymd'][0]))}, {str(round(times['ymd'][1]))}, {str(round(times['ymd'][2]))}")
+        table.add_row(
+            'Weeks and Days', f"{str(round(times['weeks'][0]))}, {str(round(times['weeks'][1]))}")
+        table.add_row(
+            'Months and Days', f"{str(round(times['md'][0]))}, {str(round(times['md'][1]))}")
+        table.add_row('Years, Months and Days',
+                      f"{str(round(times['ymd'][0]))}, {str(round(times['ymd'][1]))}, {str(round(times['ymd'][2]))}")
         console.print(table)
     else:
         print(times)
-    
 
 
 if __name__ == '__main__':

@@ -29,8 +29,8 @@ auth_handler = Auth()
 @router.post('/users/signup', tags=['Users'],
              response_model=Message,
              responses={
-                500: {"model": Message},
-                409: {"model": Message}
+    500: {"model": Message},
+    409: {"model": Message}
 })
 def sign_up(user: UserSchema):
     status, result = create_user(user)
@@ -49,17 +49,17 @@ def sign_up(user: UserSchema):
 @router.post('/users/login', tags=['Users'],
              response_model=LoggedIn,
              responses={
-                500: {"model": Message},
-                401: {"model": Message}
+    500: {"model": Message},
+    401: {"model": Message}
 })
 def login(user: UserLoginSchema):
-    status, result = login_user(user) 
+    status, result = login_user(user)
     response = {
-            'message': result
+        'message': result
     }
     if not status:
         return JSONResponse(status_code=401, content=response)
-    
+
     access_token = auth_handler.encode_token(user.email)
     refresh_token = auth_handler.encode_refresh_token(user.email)
     response = {
@@ -71,22 +71,22 @@ def login(user: UserLoginSchema):
 
 
 @router.get('/users/potected', tags=['Users'],
-             response_model=Message,
-             responses={
-                401: {"model": Message},
-                500: {"model": Message}
+            response_model=Message,
+            responses={
+    401: {"model": Message},
+    500: {"model": Message}
 })
 def test_protected(credentials: HTTPAuthorizationCredentials = Security(security)):
     token = credentials.credentials
     if auth_handler.decode_token(token):
-        return JSONResponse(status_code=200, content={'message': 'you are logged in.'}) 
+        return JSONResponse(status_code=200, content={'message': 'you are logged in.'})
 
 
 @router.get('/users/refresh_token', tags=['Users'],
-             response_model=Message,
-             responses={
-                401: {"model": Message},
-                500: {"model": Message}
+            response_model=Message,
+            responses={
+    401: {"model": Message},
+    500: {"model": Message}
 })
 def refresh_token(credentials: HTTPAuthorizationCredentials = Security(security)):
     refresh_token = credentials.credentials

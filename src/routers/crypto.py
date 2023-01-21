@@ -24,8 +24,8 @@ router = APIRouter()
 
 # Interest Rate Calculator
 @router.get('/crypto/rates', tags=["Crypto"],
-             response_model=list[Crypto],
-             responses={
+            response_model=list[Crypto],
+            responses={
     500: {"model": Message}
 })
 async def get_rates():
