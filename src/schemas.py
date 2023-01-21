@@ -64,6 +64,7 @@ class UserLoginSchema(BaseModel):
 
 
 class LoggedIn(BaseModel):
+    email: EmailStr
     access_token: str
     refresh_token: str
 

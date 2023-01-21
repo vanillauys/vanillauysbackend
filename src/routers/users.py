@@ -63,6 +63,7 @@ def login(user: UserLoginSchema):
     access_token = auth_handler.encode_token(user.email)
     refresh_token = auth_handler.encode_refresh_token(user.email)
     response = {
+        'email': user.email,
         'access_token': access_token,
         'refresh_token': refresh_token
     }
