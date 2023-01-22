@@ -91,4 +91,4 @@ def test_protected(credentials: HTTPAuthorizationCredentials = Security(security
 def refresh_token(credentials: HTTPAuthorizationCredentials = Security(security)):
     refresh_token = credentials.credentials
     new_token = auth_handler.refresh_token(refresh_token)
-    return {'access_token': new_token}
+    return JSONResponse(status_code=200, content={'message': new_token})
