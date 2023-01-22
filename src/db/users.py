@@ -21,13 +21,13 @@ def create_user(user: UserSchema):
     if not status:
         return False, 'an error occured when trying to check if the email address is in use.'
     if email:
-        return False, f'{user.email} already exists in the db.'
+        return False, f'email {user.email} already exists in the db.'
 
     status, username = check_username(user.username)
     if not status:
         return False, 'an error occured when trying to check if the username is in use.'
     if username:
-        return False, f'{user.username} already exists in the db.'
+        return False, f'username {user.username} already exists in the db.'
 
     data = {
         'username': user.username,
