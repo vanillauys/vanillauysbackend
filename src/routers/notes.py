@@ -51,7 +51,7 @@ def create(create: CreateNote, credentials: HTTPAuthorizationCredentials = Secur
     if not status:
         return JSONResponse(status_code=500, content={'message': response})
 
-    return JSONResponse(status_code=200, content=response)
+    return JSONResponse(status_code=200, content={'message': response})
 
 
 @router.post('/notes/update', tags=['Notes'],
