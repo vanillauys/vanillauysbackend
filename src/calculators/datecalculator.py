@@ -29,12 +29,15 @@ def calculate_time(start_date: str, end_date: str):
         print('End date cannot be before start date.')
         return False, "The end date cannot be before start date."
 
+    delta = relativedelta.relativedelta(end, start)
+    if delta.years > 68:
+        return False, "The maximum number of years is exceeded. (68)"
+
     seconds = (end - start).total_seconds()
     minutes = seconds / 60
     hours = seconds / 3600
     days = (end - start).days
     weeks = [(days - (days % 7)) / 7, days % 7]
-    delta = relativedelta.relativedelta(end, start)
     md = [(delta.years * 12) + delta.months, delta.days]
     ymd = [delta.years, delta.months, delta.days]
 
