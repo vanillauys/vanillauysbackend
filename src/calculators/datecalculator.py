@@ -30,8 +30,8 @@ def calculate_time(start_date: str, end_date: str):
         return False, "The end date cannot be before start date."
 
     delta = relativedelta.relativedelta(end, start)
-    if delta.years > 68:
-        return False, "The maximum number of years is exceeded. (68)"
+    if delta.years > 285616413:
+        return False, "Maximum time delta exceeded. (285616413 years)"
 
     seconds = (end - start).total_seconds()
     minutes = seconds / 60
