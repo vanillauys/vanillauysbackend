@@ -73,7 +73,7 @@ def update(update: UpdateNote, credentials: HTTPAuthorizationCredentials = Secur
     if not status:
         return JSONResponse(status_code=500, content={'message': response})
 
-    return JSONResponse(status_code=200, content=response)
+    return JSONResponse(status_code=200, content={'message': response})
 
 
 @router.get('/notes/all', tags=['Notes'],
