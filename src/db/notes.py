@@ -77,7 +77,6 @@ def get_note(key: str):
         if result is None:
             return False, f'no note with key {key} found in db.'
 
-        del result['email']
         return True, result
     except:
         return False, f'an error occurred while getting note with key {key}'
