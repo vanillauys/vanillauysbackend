@@ -105,7 +105,7 @@ def info():
     ### Basic route to test functionality.
     """
     response = {
-        'message': "https://vanillauys.com:8000/docs"
+        'message': "https://vanillauys.deta.dev/docs"
     }
     return JSONResponse(status_code=200, content=response)
 
