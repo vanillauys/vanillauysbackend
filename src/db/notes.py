@@ -31,7 +31,7 @@ class NotesDB():
         code, response, _ = self.check_notes_by_email_and_title(note.email, note.title)
 
         if code == 200:
-            return 409, f"note with title '{note.title} already exists for '{note.email}'"
+            return 409, f"note with title '{note.title}' already exists for '{note.email}'"
         if code == 500:
             return 500, response
 
@@ -59,7 +59,7 @@ class NotesDB():
         code, response, _ = self.check_notes_by_email_and_title(note.email, note.title)
 
         if code == 200:
-            return 409, f"note with title '{note.title} already exists for '{note.email}'"
+            return 409, f"note with title '{note.title}' already exists for '{note.email}'"
         if code == 500:
             return 500, response
 
@@ -95,7 +95,7 @@ class NotesDB():
             notes = results.items
             return 200, f"successfully found notes for '{email}'", notes
         except Exception:
-            return 500, f'an error occurred while fetching notes for {email}.', None
+            return 500, f"an error occurred while fetching notes for '{email}'.", None
 
 
     def get_note_by_key(self, key: str) -> Tuple[int, str, Dict]:
