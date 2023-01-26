@@ -56,6 +56,13 @@ class NotesDB():
 
 
     def update_note(self, note: schemas.UpdateNote) -> Tuple[int, str]:
+        code, response, _ = self.check_notes_by_email_and_title(note.email, note.title)
+
+        if code == 200:
+            return 409, f"note with title '{note.title} already exists for '{note.email}'"
+        if code == 500:
+            return 500, response
+
         updates = {
             'title': note.title,
             'body': note.body
