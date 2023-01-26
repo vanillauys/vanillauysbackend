@@ -35,13 +35,13 @@ class NotesDB():
         if code == 500:
             return 500, response
 
-        note = {
+        data = {
             'email': note.email,
             'title': note.title,
             'body': note.body
         }
         try:
-            self.notes.put(note)
+            self.notes.put(data)
             return 200, f"'{note.title}' successfully created for '{note.email}'."
         except Exception:
             return 500, f"an error occurred while creating '{note.title}' for '{note.email}'."
