@@ -28,7 +28,6 @@ class NotesDB():
 
 
     def create_note(self, note: schemas.CreateNote) -> Tuple[int, str]:
-        note.email = str(note.email)
         code, response, _ = self.check_notes_by_email_and_title(note.email, note.title)
 
         if code == 200:
@@ -57,7 +56,6 @@ class NotesDB():
 
 
     def update_note(self, note: schemas.UpdateNote) -> Tuple[int, str]:
-        note.email = str(note.email)
         updates = {
             'title': note.title,
             'body': note.body

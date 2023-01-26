@@ -27,7 +27,6 @@ class UserDB():
     users = deta.Base('users')
 
     def create_user(self, user: schemas.UserSchema) -> Tuple[int, str]:
-        user.email = str(user.email)
         code, _, _ = self.get_user_by_email(user.email)
         if code == 200:
             return 409, f"email '{user.email}' already exists in the db."
@@ -55,7 +54,6 @@ class UserDB():
 
 
     def login_user(self, user: schemas.UserLoginSchema) -> Tuple[int, str]:
-        user.email = str(user.email)
         code, response, result = self.get_user_by_email(user.email)
 
         if code != 200:

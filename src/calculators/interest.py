@@ -23,10 +23,16 @@ class InterestCalculator():
     ) -> Tuple[int, str, Dict[float, float]]:
         if type(initial) != float:
             return 400, 'Initial needs to be a number.', None
+        if initial <= 0:
+            return 400, 'Initial value must be positive.', None
         if type(rate) != float:
             return 400, 'Rate needs to be a number.', None
+        if rate <= 0:
+            return 400, 'Rate must be positive.', None
         if type(n) != float:
             return 400, 'Time needs to be a number.', None
+        if n <= 0:
+            return 400, 'Time must be positive.', None
 
         total = initial * (1 + ((rate/100) / n))**(n * t)
         result = {
