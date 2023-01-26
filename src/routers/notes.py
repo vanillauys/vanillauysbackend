@@ -32,7 +32,6 @@ schemas = Schemas()
     response_model=schemas.Detail,
     responses={
         401: {"model": schemas.Detail},
-        409: {"model": schemas.Detail},
         500: {"model": schemas.Detail}
     }
 )

@@ -28,13 +28,6 @@ class NotesDB():
 
 
     def create_note(self, note: schemas.CreateNote) -> Tuple[int, str]:
-        code, response, _ = self.check_notes_by_email_and_title(note.email, note.title)
-
-        if code == 200:
-            return 409, f"note with title '{note.title}' already exists for '{note.email}'"
-        if code == 500:
-            return 500, response
-
         data = {
             'email': note.email,
             'title': note.title,
@@ -56,13 +49,6 @@ class NotesDB():
 
 
     def update_note(self, note: schemas.UpdateNote) -> Tuple[int, str]:
-        code, response, _ = self.check_notes_by_email_and_title(note.email, note.title)
-
-        if code == 200:
-            return 409, f"note with title '{note.title}' already exists for '{note.email}'"
-        if code == 500:
-            return 500, response
-
         updates = {
             'title': note.title,
             'body': note.body
@@ -72,21 +58,6 @@ class NotesDB():
             return 200, f"successfully updated note '{note.key}' for '{note.email}'."
         except Exception:
             return 500, f"an error occured while updating note '{note.key}' for '{note.email}."
-
-
-    def check_notes_by_email_and_title(self, email: str, title: str) -> Tuple[int, str, list[Dict]]:
-        try:
-            results = self.notes.fetch({'email': email})
-            notes = results.items
-            notes = [x for x in notes if x['title'] == title]
-
-            if not notes:
-                return 404, f"no notes by '{email}' with title '{title}' found in db.", None
- 
-            return 200, f"found notes by '{email}' with title '{title}'", notes
-
-        except Exception:
-            return 500, f"an error occurred while fetching notes for '{email}' with title '{title}'", None
 
 
     def get_all_notes_by_email(self, email: str) -> Tuple[int, str, list[Dict]]:
