@@ -153,6 +153,11 @@ class Schemas():
     # --- Notes Schemas ------------------------------------------------------ #
     # ------------------------------------------------------------------------ #
 
+    class NotesClass(BaseModel):
+        key: str
+        email: EmailStr
+        title: str
+        body: str
 
     class CreateNoteClass(BaseModel):
         email: EmailStr
@@ -169,9 +174,13 @@ class Schemas():
         email: EmailStr
         key: str
 
+    Notes: NotesClass = NotesClass
     CreateNote: CreateNoteClass = CreateNoteClass
     UpdateNote: UpdateNoteClass = UpdateNoteClass
     DeleteNote: DeleteNoteClass = DeleteNoteClass
+
+    def notes(self):
+        return self.AllNotes
 
     def create_note(self):
         return self.CreateNote

@@ -18,7 +18,7 @@ class Valr():
         return f"https://api.valr.com/v1/public/{pair}/marketsummary"
 
 
-    def formatted(self, values: list) -> list[Dict[str, float, float]]:
+    def formatted(self, values: list) -> list[Dict[str, float]]:
         results = []
         results.append({
             'name': 'Bitcoin',
@@ -63,7 +63,7 @@ class Valr():
         return results
 
 
-    async def get_exchange_rates(self) -> Tuple[int, str, list[Dict[str, float, float]]]:
+    async def get_exchange_rates(self) -> Tuple[int, str, list[Dict[str, float]]]:
         async with httpx.AsyncClient() as client:
             btc = await client.get(self.url('BTCZAR'), headers={})
             eth = await client.get(self.url('ETHZAR'), headers={})

@@ -3,80 +3,100 @@
 # ---------------------------------------------------------------------------- #
 
 
-from db.db_conf import notes
+import os
+from deta import Deta
+from dotenv import load_dotenv
+from schemas import Schemas
+from auth.auth_manager import Auth
+from typing import Dict, Tuple
 
 
 # ---------------------------------------------------------------------------- #
-# --- Main ------------------------------------------------------------------- #
+# --- Notes Database --------------------------------------------------------- #
 # ---------------------------------------------------------------------------- #
 
 
-def create_note(email: str, title: str, body: str):
-    status, note = check_notes(email, title)
+load_dotenv()
 
-    if not status:
-        return False, f'an error occured while creating {title}.'
+class NotesDB():
 
-    if note:
-        return False, f'the note {title} already exists in the db.'
-
-    note = {
-        'email': email,
-        'title': title,
-        'body': body
-    }
-    try:
-        notes.put(note)
-        return True, f'{title} created successully.'
-    except Exception:
-        return False, f'an error occurred while creating {title}.'
+    auth = Auth()
+    schemas = Schemas()
+    PROJECT_KEY = os.getenv('DETA_PROJECT_KEY')
+    deta = Deta(PROJECT_KEY)
+    notes = deta.Base('notes')
 
 
-def check_notes(email: str, title: str):
-    try:
-        results = notes.fetch({'email': email})
-        note = results.items
-        note = [x for x in note if x['title'] == title]
-        return True, note
-    except Exception:
-        return False, None
+    def create_note(self, note: schemas.create_note()) -> Tuple[int, str]:
+        code, response, _ = self.check_notes_by_email_and_title(note.email, note.title)
+
+        if code == 200:
+            return 409, f"note with title '{note.title} already exists for '{note.email}'"
+        if code == 500:
+            return 500, response
+
+        note = {
+            'email': note.email,
+            'title': note.title,
+            'body': note.body
+        }
+        try:
+            self.notes.put(note)
+            return 200, f"'{note.title}' successfully created for '{note.email}'."
+        except Exception:
+            return 500, f"an error occurred while creating '{note.title}' for '{note.email}'."
 
 
-def delete_note(key: str):
-    try:
-        notes.delete(key)
-        return True, f'succesfully deleted {key} from db.'
-    except Exception:
-        return False, f'an error occured while trying to delete {key} from db.'
+    def delete_note(self, key: str) -> Tuple[int, str]:
+        try:
+            self.notes.delete(key)
+            return 200, f"succesfully deleted note '{key}' from db."
+        except Exception:
+            return 500, f"an error occured while trying to delete note '{key}' from db."
 
 
-def update_note(key: str, title: str, body: str):
-    updates = {
-        'title': title,
-        'body': body
-    }
-    try:
-        notes.update(updates, key)
-        return True, 'successfully updated the note in db.'
-    except Exception:
-        return False, 'an error occurred while updating the note.'
+    def update_note(self, note: schemas.update_note()) -> Tuple[int, str]:
+        updates = {
+            'title': note.title,
+            'body': note.body
+        }
+        try:
+            self.notes.update(updates, note.key)
+            return 200, f"successfully updated note '{note.key}' for '{note.email}'."
+        except Exception:
+            return 500, f"an error occured while updating note '{note.key}' for '{note.email}."
 
 
-def get_all_notes(email: str):
-    try:
-        results = notes.fetch({'email': email})
-        note = results.items
-        return True, note
-    except Exception:
-        return False, f'an error occurred while fetching notes for {email}.'
+    def check_notes_by_email_and_title(self, email: str, title: str) -> Tuple[int, str, list[Dict]]:
+        try:
+            results = self.notes.fetch({'email': email})
+            notes = results.items
+            notes = [x for x in notes if x['title'] == title]
+
+            if not notes:
+                return 404, f"no notes by '{email}' with title '{title}' found in db.", None
+ 
+            return 200, f"found notes by '{email}' with title '{title}'", notes
+
+        except Exception:
+            return 500, f"an error occurred while fetching notes for '{email}' with title '{title}'", None
 
 
-def get_note(key: str):
-    try:
-        result = notes.get(key)
-        if result is None:
-            return False, f'no note with key {key} found in db.'
+    def get_all_notes_by_email(self, email: str) -> Tuple[int, str, list[Dict]]:
+        try:
+            results = self.notes.fetch({'email': email})
+            notes = results.items
+            return 200, f"successfully found notes for '{email}'", notes
+        except Exception:
+            return 500, f'an error occurred while fetching notes for {email}.', None
 
-        return True, result
-    except:
-        return False, f'an error occurred while getting note with key {key}'
+
+    def get_note_by_key(self, key: str) -> Tuple[int, str, Dict]:
+        try:
+            note = self.notes.get(key)
+            if note is None:
+                return 404, f"no note with key '{key}' found in db.", None
+
+            return 200, f"successfully found note with key '{key}'", note
+        except:
+            return 500, f"an error occurred while fetching note with key '{key}'", None
