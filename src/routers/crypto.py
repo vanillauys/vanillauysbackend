@@ -5,8 +5,8 @@
 
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from crypto.valr import get_exchange_rates
-from schemas import Message, Crypto
+from crypto.valr import Valr
+from schemas import Schemas
 
 
 # ---------------------------------------------------------------------------- #
@@ -15,6 +15,8 @@ from schemas import Message, Crypto
 
 
 router = APIRouter()
+valr = Valr()
+schemas = Schemas()
 
 
 # ---------------------------------------------------------------------------- #
@@ -22,19 +24,18 @@ router = APIRouter()
 # ---------------------------------------------------------------------------- #
 
 
-# Interest Rate Calculator
 @router.get('/crypto/rates', tags=["Crypto"],
-            response_model=list[Crypto],
-            responses={
-    500: {"model": Message}
-})
+    response_model=list[schemas.crypto()],
+    responses={
+        500: {"model": schemas.detail()}
+    }
+)
 async def get_rates():
     """
     ### Gets all ZAR trading pair info from Valr
     """
-    status, response = await get_exchange_rates()
-    if status:
-        return JSONResponse(status_code=200, content=response)
-    else:
-        response = "An error occured while loading exchange rates"
-        return JSONResponse(status_code=500, content={'message': response})
+    code, response, result = await valr.get_exchange_rates()
+    if code != 200:
+        return JSONResponse(status_code=code, content={'detail': response})
+    
+    return JSONResponse(status_code=code, content=result)

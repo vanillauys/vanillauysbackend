@@ -3,8 +3,7 @@
 # ---------------------------------------------------------------------------- #
 
 
-import typer
-from rich import print
+from typing import Dict, Tuple
 
 
 # ---------------------------------------------------------------------------- #
@@ -12,14 +11,29 @@ from rich import print
 # ---------------------------------------------------------------------------- #
 
 
-def interest(
-    initial: float,
-    rate: float,
-    n: float,
-    t: float
-):
-    total = initial * (1 + ((rate/100) / n))**(n * t)
-    return [total, total - initial]
+class InterestCalculator():
+
+
+    def interest(
+        self,
+        initial: float,
+        rate: float,
+        n: float,
+        t: float
+    ) -> Tuple[int, str, Dict[float, float]]:
+        if type(initial) != float:
+            return 400, 'Initial needs to be a number.', None
+        if type(rate) != float:
+            return 400, 'Rate needs to be a number.', None
+        if type(n) != float:
+            return 400, 'Time needs to be a number.', None
+
+        total = initial * (1 + ((rate/100) / n))**(n * t)
+        result = {
+            'total': total,
+            'interest': total - initial
+        }
+        return 200, 'successfully calculated the total value and interest received', result
 
 
 # ---------------------------------------------------------------------------- #
@@ -28,14 +42,9 @@ def interest(
 
 
 def main():
-    initial: float = float(typer.prompt("Initial Value"))
-    rate: float = float(typer.prompt("Interest rate in %"))
-    n: float = float(typer.prompt("Number of times compounded per year"))
-    t: float = float(typer.prompt("Time in years"))
-    result = interest(initial, rate, n, t)
-    print(f"[green] Total Value[/green]: {round(result[0], 2)}")
-    print(f"[green] Interest Received[/green]: {round(result[1], 2)}")
+    # Nothing to do here
+    pass
 
 
 if __name__ == '__main__':
-    typer.run(main)
+    main()

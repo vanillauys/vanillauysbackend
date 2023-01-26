@@ -5,10 +5,9 @@
 
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
-from calculators.interest import interest
-from calculators.datecalculator import calculate_time
-from schemas import Message, Interest, Age
+from calculators.interest import InterestCalculator
+from calculators.datecalculator import DateCalculator
+from schemas import Schemas
 
 
 # ---------------------------------------------------------------------------- #
@@ -17,59 +16,54 @@ from schemas import Message, Interest, Age
 
 
 router = APIRouter()
-
-
-class InterestBody(BaseModel):
-    initial: float
-    rate: float
-    n: float
-    t: float
+interest_calc = InterestCalculator()
+age_calc = DateCalculator()
+schemas = Schemas()
 
 
 # ---------------------------------------------------------------------------- #
-# --- App Routes : Calculators ------------------------------------------------ #
+# --- App Routes : Calculators ----------------------------------------------- #
 # ---------------------------------------------------------------------------- #
 
 
 # Interest Rate Calculator
 @router.post('/calculators/interest', tags=["Calculators"],
-             response_model=Interest,
-             responses={
-    500: {"model": Message}
-})
-def interest_calculator(interest_body: InterestBody):
+    response_model=schemas.interest(),
+    responses={
+        400: {"model": schemas.detail()},
+        500: {"model": schemas.detail()}
+    }
+)
+def interest_calculator(interest_body: schemas.interest_body()):
     """
     ### Calculates compound interest.
     """
-    result = interest(
+    code, response, result = interest_calc.interest(
         interest_body.initial,
         interest_body.rate,
         interest_body.n,
         interest_body.t
     )
-    if result:
-        response = {
-            'total': result[0],
-            'interest': result[1]
-        }
-        return JSONResponse(status_code=200, content=response)
-    else:
-        response = "An error occurred on the server."
-        return JSONResponse(status_code=500, content={'message': response})
+    if code != 200:
+        return JSONResponse(status_code=code, content={'detail': response})
+    
+    return JSONResponse(status_code=code, content=result)
 
 
 # Age Calculator
 @router.post('/calculators/age', tags=["Calculators"],
-             response_model=Age,
-             responses={
-    500: {"model": Message}
-})
+    response_model=schemas.age(),
+    responses={
+        400: {"model": schemas.detail()},
+        500: {"model": schemas.detail()}
+    }
+)
 def age_calculator(start_date: str, end_date: str):
     """
     ### Calculates the age in various time units between two dates.
     """
-    status, result = calculate_time(start_date, end_date)
-    if status:
-        return JSONResponse(status_code=200, content=result)
-    else:
-        return JSONResponse(status_code=500, content={'message': result})
+    code, response, result = age_calc.calculate_time(start_date, end_date)
+    if code != 200:
+        return JSONResponse(status_code=code, content={'detail': response})
+
+    return JSONResponse(status_code=code, content=result)

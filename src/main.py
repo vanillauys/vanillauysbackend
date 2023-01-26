@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from routers import calculators, crypto, users, budgets, notes
-from schemas import Message
+from schemas import Schemas
 from dotenv import load_dotenv
 
 
@@ -16,6 +16,7 @@ from dotenv import load_dotenv
 # ---------------------------------------------------------------------------- #
 
 load_dotenv()
+schemas = Schemas()
 
 TAGS_METADATA = [
     {
@@ -57,7 +58,7 @@ TAGS_METADATA = [
 app = FastAPI(
     title="Vanillauys Backend Documentation",
     description="A collection of simple APIs for my front end.",
-    version="0.0.0",
+    version="1.0.0",
     terms_of_service="https://vanillauys.vercel.app/terms",
     contact={
         "name": "Wihan Uys",
@@ -95,17 +96,17 @@ app.include_router(notes.router)
 
 
 @app.get('/', tags=['Testing'],
-         response_model=Message,
-         responses={
-    500: {"model": Message}
-}
+    response_model=schemas.detail(),
+    responses={
+        500: {"model": schemas.detail()}
+    }
 )
 def info():
     """
     ### Basic route to test functionality.
     """
     response = {
-        'message': "https://vanillauys.deta.dev/docs"
+        'detail': "https://vanillauys.deta.dev/docs"
     }
     return JSONResponse(status_code=200, content=response)
 
