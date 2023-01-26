@@ -29,28 +29,27 @@ db = UserDB()
 
 
 @router.post('/users/signup', tags=['Users'],
-    response_model=schemas.detail(),
+    response_model=schemas.Detail,
     responses={
-        409: {"model": schemas.detail()},
-        500: {"model": schemas.detail()}
+        409: {"model": schemas.Detail},
+        500: {"model": schemas.Detail}
     }
 )
-def sign_up(user: schemas.user_schema()):
+def sign_up(user: schemas.UserSchema):
     code, response = db.create_user(user)
     return JSONResponse(status_code=code, content={'detail': response})
 
 
 @router.post('/users/login', tags=['Users'],
-    response_model=schemas.logged_in(),
+    response_model=schemas.LoggedIn,
     responses={
-        401: {"model": schemas.detail()},
-        404: {"model": schemas.detail()},
-        500: {"model": schemas.detail()}
+        401: {"model": schemas.Detail},
+        404: {"model": schemas.Detail},
+        500: {"model": schemas.Detail}
     }
 )
-def login(user: schemas.user_login_schema()):
+def login(user: schemas.UserLoginSchema):
     code, response = db.login_user(user)
-
     if code != 200:
         return JSONResponse(status_code=code, content={'detail': response})
 
@@ -65,10 +64,10 @@ def login(user: schemas.user_login_schema()):
 
 
 @router.get('/users/potected', tags=['Users'],
-    response_model=schemas.detail(),
+    response_model=schemas.Detail,
     responses={
-        401: {"model": schemas.detail()},
-        500: {"model": schemas.detail()}
+        401: {"model": schemas.Detail},
+        500: {"model": schemas.Detail}
     }
 )
 def test_protected(credentials: HTTPAuthorizationCredentials = Security(security)):
@@ -78,10 +77,10 @@ def test_protected(credentials: HTTPAuthorizationCredentials = Security(security
 
 
 @router.get('/users/refresh_token', tags=['Users'],
-    response_model=schemas.detail(),
+    response_model=schemas.Detail,
     responses={
-        401: {"model": schemas.detail()},
-        500: {"model": schemas.detail()}
+        401: {"model": schemas.Detail},
+        500: {"model": schemas.Detail}
     }
 )
 def refresh_token(credentials: HTTPAuthorizationCredentials = Security(security)):

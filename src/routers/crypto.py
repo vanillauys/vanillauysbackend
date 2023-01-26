@@ -25,9 +25,9 @@ schemas = Schemas()
 
 
 @router.get('/crypto/rates', tags=["Crypto"],
-    response_model=list[schemas.crypto()],
+    response_model=list[schemas.Crypto],
     responses={
-        500: {"model": schemas.detail()}
+        500: {"model": schemas.Detail}
     }
 )
 async def get_rates():

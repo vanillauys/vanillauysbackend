@@ -6,14 +6,8 @@
 from fastapi import APIRouter, Security
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi.responses import JSONResponse
-from schemas import Message, CreateBudget, UpdateBudget, DeleteBudget
-from db.budgets import (
-    create_budget,
-    delete_budget,
-    update_budget,
-    get_all_budgets,
-    get_budget
-)
+from schemas import Schemas
+from db.budgets import BudgetsDB
 from auth.auth_manager import Auth
 
 
@@ -24,7 +18,9 @@ from auth.auth_manager import Auth
 
 router = APIRouter()
 security = HTTPBearer()
-auth_handler = Auth()
+auth = Auth()
+schemas = Schemas()
+db = BudgetsDB()
 
 
 # ---------------------------------------------------------------------------- #
@@ -33,105 +29,109 @@ auth_handler = Auth()
 
 
 @router.post('/budgets/create', tags=['Budgets'],
-             response_model=Message,
-             responses={
-    401: {"model": Message},
-    500: {"model": Message}
-})
-def create(create: CreateBudget, credentials: HTTPAuthorizationCredentials = Security(security)):
+    response_model=schemas.Detail,
+    responses={
+        401: {"model": schemas.Detail},
+        409: {"model": schemas.Detail},
+        500: {"model": schemas.Detail}
+    }
+)
+def create(
+    budget: schemas.CreateBudget,
+    credentials: HTTPAuthorizationCredentials = Security(security)
+):
     token = credentials.credentials
-    decoded_token = auth_handler.decode_token(token)
-    if not decoded_token:
-        return JSONResponse(status_code=401, content={'message': 'Invalid credentials'})
+    decoded_token = auth.decode_token(token)
 
-    if decoded_token != create.email:
-        return JSONResponse(status_code=401, content={'message': 'you may not create a budget for this user'})
+    if decoded_token != budget.email:
+        return JSONResponse(status_code=401, content={'detail': 'you may not create a budget for this user.'})
 
-    status, response = create_budget(create.email, create.name)
-    if not status:
-        return JSONResponse(status_code=500, content={'message': response})
-
-    return JSONResponse(status_code=200, content=response)
+    code, response = db.create_budget(budget)
+    return JSONResponse(status_code=code, content={'detail', response})
 
 
 @router.post('/budgets/update', tags=['Budgets'],
-             response_model=Message,
-             responses={
-    401: {"model": Message},
-    500: {"model": Message}
-})
-def update(update: UpdateBudget, credentials: HTTPAuthorizationCredentials = Security(security)):
+    response_model=schemas.Detail,
+    responses={
+        401: {"model": schemas.Detail},
+        500: {"model": schemas.Detail}
+    }
+)
+def update(
+    budget: schemas.UpdateBudget,
+    credentials: HTTPAuthorizationCredentials = Security(security)
+):
     token = credentials.credentials
-    decoded_token = auth_handler.decode_token(token)
-    if not decoded_token:
-        return JSONResponse(status_code=401, content={'message': 'Invalid credentials'})
+    decoded_token = auth.decode_token(token)
 
-    if decoded_token != update.email:
-        return JSONResponse(status_code=401, content={'message': 'you may not update a budget for this user'})
+    if decoded_token != budget.email:
+        return JSONResponse(
+            status_code=401,
+            content={'detail': 'you may not update a budget for this user.'}
+            )
 
-    status, response = update_budget(
-        update.key, update.income, update.expenses)
-    if not status:
-        return JSONResponse(status_code=500, content={'message': response})
-
-    return JSONResponse(status_code=200, content=response)
+    code, response = db.update_budget(budget)
+    return JSONResponse(status_code=code, content={'detail': response})
 
 
 @router.get('/budgets/all', tags=['Budgets'],
-            response_model=Message,
-            responses={
-    401: {"model": Message},
-    500: {"model": Message}
-})
-def get_all(credentials: HTTPAuthorizationCredentials = Security(security)):
+    response_model=list[schemas.Budget],
+    responses={
+        401: {"model": schemas.Detail},
+        500: {"model": schemas.Detail}
+    }
+)
+def get_all(
+    credentials: HTTPAuthorizationCredentials = Security(security)
+):
     token = credentials.credentials
-    decoded_token = auth_handler.decode_token(token)
-    if not decoded_token:
-        return JSONResponse(status_code=401, content={'message': 'Invalid credentials'})
+    decoded_token = auth.decode_token(token)
 
-    status, response = get_all_budgets(decoded_token)
-    if not status:
-        return JSONResponse(status_code=500, content={'message': response})
-
-    return JSONResponse(status_code=200, content=response)
+    code, response, budgets = db.get_all_budgets_by_email(decoded_token)
+    if code != 200:
+        return JSONResponse(status_code=code, content={'detail': response})
+    
+    return JSONResponse(status_code=200, content=budgets)
 
 
 @router.get('/budgets/{key}', tags=['Budgets'],
-            response_model=Message,
-            responses={
-    401: {"model": Message},
-    500: {"model": Message}
-})
-def get_one(key: str, credentials: HTTPAuthorizationCredentials = Security(security)):
+    response_model=schemas.Budget,
+    responses={
+        401: {"model": schemas.Detail},
+        404: {"model": schemas.Detail},
+        500: {"model": schemas.Detail}
+    }
+)
+def get_one(
+    key: str,
+    credentials: HTTPAuthorizationCredentials = Security(security)
+):
     token = credentials.credentials
-    decoded_token = auth_handler.decode_token(token)
-    if not decoded_token:
-        return JSONResponse(status_code=401, content={'message': 'Invalid credentials'})
+    auth.decode_token(token)
 
-    status, response = get_budget(key)
-    if not status:
-        return JSONResponse(status_code=500, content={'message': response})
+    code, response, budget = db.get_budget_by_key(key)
+    if code != 200:
+        return JSONResponse(status_code=code, content={'detail': response})
 
-    return JSONResponse(status_code=200, content=response)
+    return JSONResponse(status_code=200, content=budget)
 
 
 @router.delete('/budgets/delete', tags=['Budgets'],
-               response_model=Message,
-               responses={
-    401: {"model": Message},
-    500: {"model": Message}
-})
-def delete(delete: DeleteBudget, credentials: HTTPAuthorizationCredentials = Security(security)):
+    response_model=schemas.Detail,
+    responses={
+        401: {"model": schemas.Detail},
+        500: {"model": schemas.Detail}
+    }
+)
+def delete(
+    delete: schemas.DeleteBudget,
+    credentials: HTTPAuthorizationCredentials = Security(security)
+):
     token = credentials.credentials
-    decoded_token = auth_handler.decode_token(token)
-    if not decoded_token:
-        return JSONResponse(status_code=401, content={'message': 'Invalid credentials'})
+    decoded_token = auth.decode_token(token)
 
     if decoded_token != delete.email:
-        return JSONResponse(status_code=401, content={'message': 'you may not delete a budget for this user'})
+        return JSONResponse(status_code=401, content={'message': 'you may not delete a budget for this user.'})
 
-    status, response = delete_budget(delete.key)
-    if not status:
-        return JSONResponse(status_code=500, content={'message': response})
-
-    return JSONResponse(status_code=200, content=response)
+    code, response = db.delete_budget(delete.key)
+    return JSONResponse(status_code=code, content={'detail': response})

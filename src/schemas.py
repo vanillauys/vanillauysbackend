@@ -3,7 +3,7 @@
 # ---------------------------------------------------------------------------- #
 
 
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, EmailStr
 from typing import Dict
 
 
@@ -21,12 +21,9 @@ class Schemas():
 
 
     class DetailClass(BaseModel):
-        detail: str = Field(default=None)
+        detail: str
 
     Detail: DetailClass = DetailClass
-
-    def detail(self):
-        return self.Detail
 
 
     # ------------------------------------------------------------------------ #
@@ -57,15 +54,6 @@ class Schemas():
     Interest: InterestClass = InterestClass
     Age: AgeClass = AgeClass
 
-    def interest_body(self):
-        return self.InterestBody
-
-    def interest(self):
-        return self.Interest
-
-    def age(self):
-        return self.Age
-
 
     # ------------------------------------------------------------------------ #
     # --- Crypto Schemas ----------------------------------------------------- #
@@ -79,9 +67,6 @@ class Schemas():
 
     Crypto: CryptoClass = CryptoClass
 
-    def crypto(self):
-        return self.Crypto
-
 
     # ------------------------------------------------------------------------ #
     # --- User Schemas ------------------------------------------------------- #
@@ -89,13 +74,13 @@ class Schemas():
 
 
     class UserSchemaClass(BaseModel):
-        username: str = Field(default=None)
-        email: EmailStr = Field(default=None)
-        password: str = Field(default=None)
+        username: str
+        email: EmailStr
+        password: str
 
     class UserLoginSchemaClass(BaseModel):
-        email: EmailStr = Field(default=None)
-        password: str = Field(default=None)
+        email: EmailStr
+        password: str
 
     class LoggedInClass(BaseModel):
         email: EmailStr
@@ -106,20 +91,16 @@ class Schemas():
     UserLoginSchema: UserLoginSchemaClass = UserLoginSchemaClass
     LoggedIn: LoggedInClass = LoggedInClass
 
-    def user_schema(self):
-        return self.UserSchema
-
-    def user_login_schema(self):
-        return self.UserLoginSchema
-
-    def logged_in(self):
-        return self.LoggedIn
-
 
     # ------------------------------------------------------------------------ #
     # --- Budget Schemas ----------------------------------------------------- #
     # ------------------------------------------------------------------------ #
 
+    class BudgetClass(BaseModel):
+        key: str
+        email: EmailStr
+        income: dict
+        expenses: dict
 
     class CreateBudgetClass(BaseModel):
         email: EmailStr
@@ -132,21 +113,13 @@ class Schemas():
     class UpdateBudgetClass(BaseModel):
         email: EmailStr
         key: str
-        income: Dict[str, float,]
+        income: Dict[str, float]
         expenses: Dict[str, float]
 
+    Budget: BudgetClass = BudgetClass
     CreateBudget: CreateBudgetClass = CreateBudgetClass
     DeleteBudget: DeleteBudgetClass = DeleteBudgetClass
     UpdateBudget: UpdateBudgetClass = UpdateBudgetClass
-
-    def create_budget(self):
-        return self.CreateBudget
-
-    def delete_budget(self):
-        return self.DeleteBudget
-
-    def update_budget(self):
-        return self.UpdateBudget
 
 
     # ------------------------------------------------------------------------ #
@@ -178,15 +151,3 @@ class Schemas():
     CreateNote: CreateNoteClass = CreateNoteClass
     UpdateNote: UpdateNoteClass = UpdateNoteClass
     DeleteNote: DeleteNoteClass = DeleteNoteClass
-
-    def notes(self):
-        return self.AllNotes
-
-    def create_note(self):
-        return self.CreateNote
-
-    def update_note(self):
-        return self.UpdateNote
-
-    def delete_note(self):
-        return self.DeleteNote

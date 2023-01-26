@@ -29,20 +29,20 @@ schemas = Schemas()
 
 
 @router.post('/notes/create', tags=['Notes'],
-    response_model=schemas.detail(),
+    response_model=schemas.Detail,
     responses={
-        401: {"model": schemas.detail()},
-        409: {"model": schemas.detail()},
-        500: {"model": schemas.detail()}
+        401: {"model": schemas.Detail},
+        409: {"model": schemas.Detail},
+        500: {"model": schemas.Detail}
     }
 )
 def create(
-    note: schemas.create_note(),
+    note: schemas.CreateNote,
     credentials: HTTPAuthorizationCredentials = Security(security)
 ):
     token = credentials.credentials
     decoded_token = auth.decode_token(token)
-
+    note.email = str(note.email)
     if decoded_token != note.email:
         return JSONResponse(
             status_code=401,
@@ -54,19 +54,18 @@ def create(
 
 
 @router.post('/notes/update', tags=['Notes'],
-    response_model=schemas.detail(),
+    response_model=schemas.Detail,
     responses={
-        401: {"model": schemas.detail()},
-        500: {"model": schemas.detail()}
+        401: {"model": schemas.Detail},
+        500: {"model": schemas.Detail}
     }
 )
 def update(
-    note: schemas.update_note(),
+    note: schemas.UpdateNote,
     credentials: HTTPAuthorizationCredentials = Security(security)
 ):
     token = credentials.credentials
     decoded_token = auth.decode_token(token)
-
     if decoded_token != note.email:
         return JSONResponse(
             status_code=401,
@@ -78,10 +77,10 @@ def update(
 
 
 @router.get('/notes/all', tags=['Notes'],
-    response_model=list[schemas.notes()],
+    response_model=list[schemas.Notes],
     responses={
-        401: {"model": schemas.detail()},
-        500: {"model": schemas.detail()}
+        401: {"model": schemas.Detail},
+        500: {"model": schemas.Detail}
 }
 )
 def get_all(
@@ -98,11 +97,11 @@ def get_all(
 
 
 @router.get('/notes/{key}', tags=['Notes'],
-    response_model=schemas.note(),
+    response_model=schemas.Notes,
     responses={
-        401: {"model": schemas.detail()},
-        404: {"model": schemas.detail()},
-        500: {"model": schemas.detail()}
+        401: {"model": schemas.Detail},
+        404: {"model": schemas.Detail},
+        500: {"model": schemas.Detail}
     }
 )
 def get_one(
@@ -120,19 +119,19 @@ def get_one(
 
 
 @router.delete('/notes/delete', tags=['Notes'],
-    response_model=schemas.detail(),
+    response_model=schemas.Detail,
     responses={
-        401: {"model": schemas.detail()},
-        500: {"model": schemas.detail()}
+        401: {"model": schemas.Detail},
+        500: {"model": schemas.Detail}
     }
 )
 def delete(
-    delete: schemas.delete_note(),
+    delete: schemas.DeleteNote,
     credentials: HTTPAuthorizationCredentials = Security(security)
 ):
     token = credentials.credentials
     decoded_token = auth.decode_token(token)
-
+    delete.email = str(delete.email)
     if decoded_token != delete.email:
         return JSONResponse(
             status_code=401,

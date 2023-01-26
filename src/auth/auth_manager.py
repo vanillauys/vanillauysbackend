@@ -5,6 +5,7 @@
 
 import os
 import jwt
+from dotenv import load_dotenv
 from fastapi import HTTPException
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
@@ -16,16 +17,17 @@ from passlib.context import CryptContext
 
 
 class Auth():
+    load_dotenv()
     hasher = CryptContext(schemes=['bcrypt'])
     secret = os.getenv("JWT_SECRET_KEY")
 
-    def hash_password(self, password):
+    def hash_password(self, password) -> str:
         return self.hasher.hash(password)
 
-    def verify_password(self, password, encoded_password):
+    def verify_password(self, password, encoded_password) -> bool:
         return self.hasher.verify(password, encoded_password)
 
-    def encode_token(self, email):
+    def encode_token(self, email) -> str:
         payload = {
             'exp': datetime.utcnow() + timedelta(days=1, minutes=0),
             'iat': datetime.utcnow(),
@@ -38,7 +40,7 @@ class Auth():
             algorithm='HS256'
         )
 
-    def decode_token(self, token):
+    def decode_token(self, token) -> str:
         try:
             payload = jwt.decode(token, self.secret, algorithms=['HS256'])
             if (payload['scope'] == 'access_token'):
@@ -50,7 +52,7 @@ class Auth():
         except jwt.InvalidTokenError:
             raise HTTPException(status_code=401, detail='Invalid token')
 
-    def encode_refresh_token(self, email):
+    def encode_refresh_token(self, email) -> str:
         payload = {
             'exp': datetime.utcnow() + timedelta(days=14, hours=0),
             'iat': datetime.utcnow(),
@@ -63,7 +65,7 @@ class Auth():
             algorithm='HS256'
         )
 
-    def refresh_token(self, refresh_token):
+    def refresh_token(self, refresh_token) -> str:
         try:
             payload = jwt.decode(
                 refresh_token, self.secret, algorithms=['HS256'])

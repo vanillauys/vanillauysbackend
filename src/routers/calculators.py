@@ -28,13 +28,13 @@ schemas = Schemas()
 
 # Interest Rate Calculator
 @router.post('/calculators/interest', tags=["Calculators"],
-    response_model=schemas.interest(),
+    response_model=schemas.Interest,
     responses={
-        400: {"model": schemas.detail()},
-        500: {"model": schemas.detail()}
+        400: {"model": schemas.Detail},
+        500: {"model": schemas.Detail}
     }
 )
-def interest_calculator(interest_body: schemas.interest_body()):
+def interest_calculator(interest_body: schemas.InterestBody):
     """
     ### Calculates compound interest.
     """
@@ -52,10 +52,10 @@ def interest_calculator(interest_body: schemas.interest_body()):
 
 # Age Calculator
 @router.post('/calculators/age', tags=["Calculators"],
-    response_model=schemas.age(),
+    response_model=schemas.Age,
     responses={
-        400: {"model": schemas.detail()},
-        500: {"model": schemas.detail()}
+        400: {"model": schemas.Detail},
+        500: {"model": schemas.Detail}
     }
 )
 def age_calculator(start_date: str, end_date: str):

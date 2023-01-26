@@ -27,7 +27,8 @@ class NotesDB():
     notes = deta.Base('notes')
 
 
-    def create_note(self, note: schemas.create_note()) -> Tuple[int, str]:
+    def create_note(self, note: schemas.CreateNote) -> Tuple[int, str]:
+        note.email = str(note.email)
         code, response, _ = self.check_notes_by_email_and_title(note.email, note.title)
 
         if code == 200:
@@ -55,7 +56,8 @@ class NotesDB():
             return 500, f"an error occured while trying to delete note '{key}' from db."
 
 
-    def update_note(self, note: schemas.update_note()) -> Tuple[int, str]:
+    def update_note(self, note: schemas.UpdateNote) -> Tuple[int, str]:
+        note.email = str(note.email)
         updates = {
             'title': note.title,
             'body': note.body
