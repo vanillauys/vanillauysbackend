@@ -96,6 +96,7 @@ class Schemas():
     # --- Budget Schemas ----------------------------------------------------- #
     # ------------------------------------------------------------------------ #
 
+
     class BudgetClass(BaseModel):
         key: str
         email: EmailStr
@@ -126,6 +127,7 @@ class Schemas():
     # --- Notes Schemas ------------------------------------------------------ #
     # ------------------------------------------------------------------------ #
 
+
     class NotesClass(BaseModel):
         key: str
         email: EmailStr
@@ -151,3 +153,28 @@ class Schemas():
     CreateNote: CreateNoteClass = CreateNoteClass
     UpdateNote: UpdateNoteClass = UpdateNoteClass
     DeleteNote: DeleteNoteClass = DeleteNoteClass
+
+
+    # ------------------------------------------------------------------------ #
+    # --- Blogs Schemas ------------------------------------------------------ #
+    # ------------------------------------------------------------------------ #
+
+
+    class BlogClass(BaseModel):
+        key: str
+        link: str
+        title: str
+        intro: str
+        central: str
+        conclusion: str
+        keypoints: list[str]
+        images: list[str]
+
+    class BlogInfoClass(BaseModel):
+        key: str
+        title: str
+        intro: str
+        image: str
+
+    Blog: BlogClass = BlogClass    
+    BlogInfo: BlogInfoClass = BlogInfoClass

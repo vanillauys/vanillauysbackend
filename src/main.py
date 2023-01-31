@@ -5,8 +5,8 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-from routers import calculators, crypto, users, budgets, notes
+from fastapi.responses import JSONResponse, FileResponse
+from routers import calculators, crypto, users, budgets, notes, blogs
 from schemas import Schemas
 from dotenv import load_dotenv
 
@@ -17,6 +17,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 schemas = Schemas()
+favicon_path = 'icon.jpg'
 
 TAGS_METADATA = [
     {
@@ -42,6 +43,10 @@ TAGS_METADATA = [
     {
         "name": "Notes",
         "description": "For taking simple notes."
+    },
+    {
+        "name": "Blogs",
+        "description": "AI Generated blogs from YouTube videos."
     },
     {
         "name": "Testing",
@@ -88,6 +93,7 @@ app.include_router(crypto.router)
 app.include_router(users.router)
 app.include_router(budgets.router)
 app.include_router(notes.router)
+app.include_router(blogs.router)
 
 
 # ---------------------------------------------------------------------------- #
@@ -109,6 +115,11 @@ def info():
         'detail': "https://vanillauys.deta.dev/docs"
     }
     return JSONResponse(status_code=200, content=response)
+
+
+@app.get('/favicon.ico', include_in_schema=False)
+async def favicon():
+    return FileResponse(favicon_path)
 
 
 # ---------------------------------------------------------------------------- #
