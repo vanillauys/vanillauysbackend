@@ -47,7 +47,7 @@ class BlogsDB():
                 'key': item['key'],
                 'title': item['title'],
                 'intro': item['intro'],
-                'image': item['image'][0]
+                'image': item['images'][0]
             }
             formatted.append(data)
         return formatted
