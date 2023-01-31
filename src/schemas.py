@@ -162,12 +162,12 @@ class Schemas():
 
     class BlogClass(BaseModel):
         key: str
-        link: str
+        url: str
         title: str
         intro: str
         central: str
         conclusion: str
-        keypoints: list[str]
+        key_points: list[str]
         images: list[str]
 
     class BlogInfoClass(BaseModel):
