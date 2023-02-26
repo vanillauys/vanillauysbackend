@@ -63,7 +63,7 @@ TAGS_METADATA = [
 app = FastAPI(
     title="Vanillauys Backend Documentation",
     description="A collection of simple APIs for my front end.",
-    version="1.0.0",
+    version="0.5.1",
     terms_of_service="https://vanillauys.vercel.app/about",
     contact={
         "name": "Wihan Uys",
@@ -112,7 +112,7 @@ def info():
     ### Basic route to test functionality.
     """
     response = {
-        'detail': "https://vanillauys.deta.dev/docs"
+        'detail': "https://vanillauys-1-t9282601.deta.app/"
     }
     return JSONResponse(status_code=200, content=response)
 
