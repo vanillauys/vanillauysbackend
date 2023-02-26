@@ -22,7 +22,7 @@ class UserDB():
 
     auth = Auth()
     schemas = Schemas()
-    PROJECT_KEY = os.getenv('DETA_PROJECT_KEY')
+    PROJECT_KEY = os.getenv('DETA_KEY')
     deta = Deta(PROJECT_KEY)
     users = deta.Base('users')
 
