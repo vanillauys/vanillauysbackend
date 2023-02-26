@@ -64,7 +64,7 @@ app = FastAPI(
     title="Vanillauys Backend Documentation",
     description="A collection of simple APIs for my front end.",
     version="1.0.0",
-    terms_of_service="https://vanillauys.vercel.app/terms",
+    terms_of_service="https://vanillauys.vercel.app/about",
     contact={
         "name": "Wihan Uys",
         "url": "https://vanillauys.vercel.app/about",
