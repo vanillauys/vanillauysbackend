@@ -59,7 +59,6 @@ class Valr():
         try:
             for index, value in enumerate(results):
                 values[index] = value.json()
-            print(f"VALUES IS: {values}")
             return 200, 'successfully received exchange rate from valr.', self.formatted(values)
         except Exception:
             return 500, 'error receiving exchange rate from valr.', None
