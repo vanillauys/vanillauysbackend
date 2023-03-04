@@ -6,6 +6,7 @@
 import httpx
 import asyncio
 from typing import Dict, Tuple
+from time import perf_counter
 
 
 # ---------------------------------------------------------------------------- #
@@ -49,6 +50,7 @@ class Valr():
 
 
     async def get_exchange_rates(self) -> Tuple[int, str, list[Dict[str, float]]]:
+        start = perf_counter()
         values = [0] * 8
         urls = self.get_url_list()
         headers = {}
@@ -59,6 +61,8 @@ class Valr():
         try:
             for index, value in enumerate(results):
                 values[index] = value.json()
+            end = perf_counter()
+            print(f"Took {end - start} seconds.")
             return 200, 'successfully received exchange rate from valr.', self.formatted(values)
         except Exception:
             return 500, 'error receiving exchange rate from valr.', None
